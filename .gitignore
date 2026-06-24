@@ -1,0 +1,22 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+.env
+
+# Modern editors
+.vscode/
+.idea/
+
+# Node/Frontend
+node_modules/
+dist/
+build/
+.next/
+out/
+.vercel

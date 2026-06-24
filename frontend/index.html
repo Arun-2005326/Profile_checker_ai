@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitScore AI – GitHub Profile Analyzer</title>
+  <meta name="description" content="Evaluate your software engineering profile and get a placement readiness score with actionable GitScore feedback." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Background blobs -->
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">GitScore<span class="logo-accent">AI</span></span>
+      </div>
+      <p class="header-tagline">AI-powered placement readiness analyzer</p>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <h1 class="hero-title">Analyze Your <span class="gradient-text">Developer Profile</span></h1>
+    <p class="hero-sub">Enter your GitHub username and get a comprehensive placement readiness score with detailed metrics.</p>
+  </section>
+
+  <!-- ── MAIN CONTENT ── -->
+  <main class="main-grid">
+
+    <!-- Input Card -->
+    <section class="card input-card" id="input-section">
+      <div class="card-header">
+        <div class="platform-icon github-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+        </div>
+        <div>
+          <h2 class="card-title">GitHub Analyzer</h2>
+          <p class="card-subtitle">Profile completeness, repos & activity</p>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="github">GitHub Username</label>
+        <div class="input-row">
+          <div class="input-wrapper">
+            <span class="input-prefix">github.com/</span>
+            <input type="text" id="github" placeholder="e.g. torvalds" autocomplete="off" spellcheck="false" />
+          </div>
+          <button class="btn btn-primary" id="github-btn" onclick="checkGitHub()">
+            <span class="btn-text">Analyze</span>
+            <span class="btn-icon">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="divider">
+        <span>also check</span>
+      </div>
+
+      <div class="platform-row">
+        <div class="mini-input-group">
+          <label class="input-label" for="leetcode">LeetCode</label>
+          <div class="mini-input-row">
+            <input type="text" id="leetcode" placeholder="username" autocomplete="off" spellcheck="false" />
+            <button class="btn btn-secondary lc-btn" onclick="checkLeetCode()">Go</button>
+          </div>
+        </div>
+        <div class="mini-input-group">
+          <label class="input-label" for="hackerrank">HackerRank</label>
+          <div class="mini-input-row">
+            <input type="text" id="hackerrank" placeholder="username" autocomplete="off" spellcheck="false" />
+            <button class="btn btn-secondary hr-btn" onclick="checkHackerRank()">Go</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Panel -->
+    <section class="card results-card" id="results-section">
+      <div class="results-empty" id="results-empty">
+        <div class="empty-icon">📊</div>
+        <p class="empty-title">No results yet</p>
+        <p class="empty-sub">Enter a username and hit Analyze to see your placement readiness score.</p>
+      </div>
+
+      <!-- GitHub Result -->
+      <div class="result-block hidden" id="github-result">
+        <div class="result-header">
+          <div class="platform-badge github-badge">GitHub</div>
+          <div class="score-pill" id="gh-score-pill">—</div>
+        </div>
+
+        <div class="score-ring-wrap">
+          <svg class="score-ring" viewBox="0 0 120 120" width="120" height="120">
+            <circle class="ring-bg" cx="60" cy="60" r="50"/>
+            <circle class="ring-fill" id="gh-ring" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314"/>
+          </svg>
+          <div class="ring-label">
+            <span class="ring-number" id="gh-score-num">0</span>
+            <span class="ring-max">/100</span>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="metric-icon">📁</span>
+            <span class="metric-value" id="gh-repos">—</span>
+            <span class="metric-label">Public Repos</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-icon">⭐</span>
+            <span class="metric-value" id="gh-stars">—</span>
+            <span class="metric-label">Total Stars</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-icon">👥</span>
+            <span class="metric-value" id="gh-followers">—</span>
+            <span class="metric-label">Followers</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-icon">📄</span>
+            <span class="metric-value" id="gh-docs">—</span>
+            <span class="metric-label">Doc Quality</span>
+          </div>
+        </div>
+
+
+
+        <!-- AI Insights -->
+        <div class="feedback-wrap ai-insights hidden" id="gh-ai-feedback-wrap" style="border-color: var(--accent); background: rgba(59,130,246,0.05);">
+          <h3 class="feedback-title" style="color: var(--accent);">✨ AI Recruiter Insights</h3>
+          <div class="ai-content" id="gh-ai-feedback" style="font-size: 0.85rem; color: var(--text); line-height: 1.6; white-space: pre-line;">
+            <!-- AI text goes here -->
+          </div>
+        </div>
+
+        <!-- Feedback section -->
+        <div class="feedback-wrap hidden" id="gh-feedback-wrap">
+          <h3 class="feedback-title">💡 Standard Recommendations</h3>
+          <ul class="feedback-list" id="gh-feedback-list"></ul>
+        </div>
+      </div>
+
+      <!-- LeetCode Result -->
+      <div class="result-block hidden" id="lc-result">
+        <div class="result-header">
+          <div class="platform-badge lc-badge">LeetCode</div>
+          <div class="score-pill lc-pill" id="lc-score-pill">—</div>
+        </div>
+        <div class="metrics-grid single-row">
+          <div class="metric-card">
+            <span class="metric-icon">✅</span>
+            <span class="metric-value" id="lc-solved">—</span>
+            <span class="metric-label">Total Solved</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-icon">🟢</span>
+            <span class="metric-value" id="lc-easy">—</span>
+            <span class="metric-label">Easy</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-icon">🟡</span>
+            <span class="metric-value" id="lc-medium">—</span>
+            <span class="metric-label">Medium</span>
+          </div>
+          <div class="metric-card">
+            <span class="metric-icon">🔴</span>
+            <span class="metric-value" id="lc-hard">—</span>
+            <span class="metric-label">Hard</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HackerRank Result -->
+      <div class="result-block hidden" id="hr-result">
+        <div class="result-header">
+          <div class="platform-badge hr-badge">HackerRank</div>
+          <div class="score-pill hr-pill" id="hr-score-pill">—</div>
+        </div>
+        <div class="metrics-grid single-row">
+          <div class="metric-card">
+            <span class="metric-icon">🏆</span>
+            <span class="metric-value" id="hr-score">—</span>
+            <span class="metric-label">Score</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div class="loading hidden" id="loading">
+        <div class="spinner"></div>
+        <p class="loading-text" id="loading-text">Analyzing profile…</p>
+      </div>
+
+      <!-- Error state -->
+      <div class="error-block hidden" id="error-block">
+        <div class="error-icon">⚠️</div>
+        <p class="error-message" id="error-message">Something went wrong.</p>
+        <button class="btn btn-ghost" onclick="clearError()">Try Again</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section class="how-section">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <h3 class="step-title">Enter Username</h3>
+        <p class="step-desc">Provide your GitHub (and optionally LeetCode/HackerRank) username.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <h3 class="step-title">AI Analysis</h3>
+        <p class="step-desc">Our engine fetches public data and scores your profile across 5 dimensions.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <h3 class="step-title">Get Feedback</h3>
+        <p class="step-desc">Receive a placement readiness score and actionable tips to improve.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SCORING CRITERIA ── -->
+  <section class="criteria-section">
+    <h2 class="section-title">Scoring Criteria</h2>
+    <div class="criteria-grid">
+      <div class="criterion">
+        <span class="criterion-label">Profile Completeness</span>
+        <div class="criterion-bar-wrap">
+          <div class="criterion-bar" style="--pct: 20%"></div>
+        </div>
+        <span class="criterion-score">20 pts</span>
+      </div>
+      <div class="criterion">
+        <span class="criterion-label">Repository Count</span>
+        <div class="criterion-bar-wrap">
+          <div class="criterion-bar" style="--pct: 20%"></div>
+        </div>
+        <span class="criterion-score">20 pts</span>
+      </div>
+      <div class="criterion">
+        <span class="criterion-label">Repository Quality</span>
+        <div class="criterion-bar-wrap">
+          <div class="criterion-bar bar-accent" style="--pct: 30%"></div>
+        </div>
+        <span class="criterion-score">30 pts</span>
+      </div>
+      <div class="criterion">
+        <span class="criterion-label">Followers</span>
+        <div class="criterion-bar-wrap">
+          <div class="criterion-bar bar-warn" style="--pct: 15%"></div>
+        </div>
+        <span class="criterion-score">15 pts</span>
+      </div>
+      <div class="criterion">
+        <span class="criterion-label">Original Work</span>
+        <div class="criterion-bar-wrap">
+          <div class="criterion-bar bar-warn" style="--pct: 15%"></div>
+        </div>
+        <span class="criterion-score">15 pts</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <p>© 2026 <strong>GitScore AI</strong> · License · Arunkumar</p>
+  </footer>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
